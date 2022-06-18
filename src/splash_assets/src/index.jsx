@@ -15,8 +15,22 @@ const MyHello = () => {
   React.useEffect(() => {
     const loadCanvasKit = async () => {
       console.log("Loading");
-      const canvaskit = await CanvasKitInit();
-      console.log(canvaskit);
+      const CanvasKit = await CanvasKitInit();
+      console.log(CanvasKit);
+
+      const surface = CanvasKit.MakeCanvasSurface('foo');
+
+      const paint = new CanvasKit.Paint();
+      paint.setColor(CanvasKit.Color4f(0.9, 0, 0, 1.0));
+      paint.setStyle(CanvasKit.PaintStyle.Stroke);
+      paint.setAntiAlias(true);
+      const rr = CanvasKit.RRectXY(CanvasKit.LTRBRect(10, 60, 210, 260), 25, 15);
+  
+      function draw(canvas) {
+        canvas.clear(CanvasKit.WHITE);
+        canvas.drawRRect(rr, paint);
+      }
+      surface.drawOnce(draw);
     };
 
     loadCanvasKit();
@@ -44,6 +58,7 @@ const MyHello = () => {
         Greeting is: "
         <span style={{ color: "blue" }}>{message}</span>"
       </div>
+      <canvas id="foo" width="300" height="300"></canvas>
     </div>
   );
 };
