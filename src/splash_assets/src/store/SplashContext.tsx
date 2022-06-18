@@ -15,9 +15,13 @@ export interface SplashContext {
   isAuthenticated: boolean,
   authClient: AuthClient | null,
   actor: BackendActor | null,
-  projects: SplashProject[],
+  projects: SplashProject[] | null,
+  currentProject: SplashProject | null,
   login: () => void,
   logout: () => Promise<void>,
+  create: () => void,
+  open: (project: SplashProject) => void,
+  close: () => void,
 }
 
 const splashContext = createContext<SplashContext>({
@@ -25,9 +29,13 @@ const splashContext = createContext<SplashContext>({
   isAuthenticated: false,
   authClient: null,
   actor: null,
-  projects: [],
+  projects: null,
+  currentProject: null,
   login: () => {},
   logout: async () => {},
+  create: () => {},
+  open: (project) => {},
+  close: () => {},
 })
 
 export function SplashContextProvider({ children }: { children: ReactChild }) {
@@ -35,7 +43,8 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
   const [actor, setActor] = useState<BackendActor | null>(null);
-  const [projects, setProjects] = useState<SplashProject[]>([]);
+  const [projects, setProjects] = useState<SplashProject[] | null>(null);
+  const [currentProject, setCurrentProject] = useState<SplashProject | null>(null);
 
   useEffect(() => {
     const setupCanvasKit = async () => {
@@ -100,6 +109,23 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
     }
   }
 
+  const create = async () => {
+    await actor.add_project("");
+    
+    const projects = await actor.get_projects();
+    setProjects(projects);
+
+    open(projects[projects.length - 1]);
+  }
+
+  const open = (project: SplashProject) => {
+    setCurrentProject(project);
+  };
+
+  const close = () => {
+    setCurrentProject(null);
+  }
+
   return (
     <splashContext.Provider
         value={{
@@ -108,8 +134,12 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
           authClient,
           actor,
           projects,
+          currentProject,
           login,
-          logout
+          logout,
+          create,
+          open,
+          close
         }}>
         {children}
     </splashContext.Provider>

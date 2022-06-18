@@ -147,8 +147,8 @@ fn update_project(project: SplashProject) {
     })
 }
 
-#[update(name = "add_note")]
-fn add_project(project_data: String) {
+#[update(name = "add_project")]
+fn add_project(project_data: String)  {
     let user = caller();
     assert!(is_user_registered(user));
     assert!(project_data.chars().count() <= MAX_PROJECT_CHARS.with(|mnc| mnc.clone()));

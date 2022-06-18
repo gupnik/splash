@@ -18,7 +18,7 @@ const pages = ['Projects'];
 const settings = ['Logout'];
 
 const Header = () => {
-  const { isAuthenticated, login, logout } = useSplashContext();
+  const { isAuthenticated, login, logout, close } = useSplashContext();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -90,11 +90,18 @@ const Header = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              <Button
+                key={"Projects"}
+                onClick={close}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {"Projects"}
+              </Button>
+              {/* {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -117,7 +124,14 @@ const Header = () => {
             SPLASH
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+             <Button
+                key={"Projects"}
+                onClick={close}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {"Projects"}
+              </Button>
+            {/* {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
@@ -125,7 +139,7 @@ const Header = () => {
               >
                 {page}
               </Button>
-            ))}
+            ))} */}
           </Box>
 
         {isAuthenticated ?
