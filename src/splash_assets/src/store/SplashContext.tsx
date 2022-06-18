@@ -2,6 +2,8 @@ import React, { createContext, ReactChild, useContext, useEffect, useState } fro
 import { BackendActor, createActor } from "../lib/actor";
 import { AuthClient } from '@dfinity/auth-client';
 import { canisterId } from "../../../declarations/internet_identity";
+import { CanvasKit } from "canvaskit-wasm";
+import { loadCanvasKit } from "../lib/utils";
 
 export interface SplashProject {
     id: bigint;
@@ -9,6 +11,7 @@ export interface SplashProject {
 }
 
 export interface SplashContext {
+  canvasKit: CanvasKit | null,
   isAuthenticated: boolean,
   authClient: AuthClient | null,
   actor: BackendActor | null,
@@ -18,6 +21,7 @@ export interface SplashContext {
 }
 
 const splashContext = createContext<SplashContext>({
+  canvasKit: null,
   isAuthenticated: false,
   authClient: null,
   actor: null,
@@ -27,13 +31,20 @@ const splashContext = createContext<SplashContext>({
 })
 
 export function SplashContextProvider({ children }: { children: ReactChild }) {
+  const [canvasKit, setCanvasKit] = useState<CanvasKit | null>(null);
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
   const [actor, setActor] = useState<BackendActor | null>(null);
   const [projects, setProjects] = useState<SplashProject[]>([]);
 
   useEffect(() => {
-    const loadActor = async () => {
+    const setupCanvasKit = async () => {
+      const canvasKit = (await loadCanvasKit()) as unknown as CanvasKit;
+      console.log(canvasKit);
+      setCanvasKit(canvasKit);
+    }
+
+    const setupActor = async () => {
       const authClient = await AuthClient.create();
       setAuthClient(authClient);
       if (await authClient.isAuthenticated()) {
@@ -43,7 +54,8 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
       }
     };
 
-    loadActor();
+    setupCanvasKit();
+    setupActor();
   }, []);
 
   const onLogin = async (authClient: AuthClient) => {
@@ -91,6 +103,7 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
   return (
     <splashContext.Provider
         value={{
+          canvasKit,
           isAuthenticated,
           authClient,
           actor,
