@@ -24,6 +24,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "events": "3.3.0",
     "html-webpack-plugin": "5.5.0",
+    "path-browserify": "^1.0.1",
     "process": "0.11.10",
     "stream-browserify": "3.0.0",
     "terser-webpack-plugin": "5.2.5",
@@ -44,6 +45,7 @@
     "last 2 edge version"
   ],
   "dependencies": {
+    "canvaskit-wasm": "^0.34.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { splash } from "../../declarations/splash";
+import CanvasKitInit from "canvaskit-wasm";
 
 const MyHello = () => {
   const [name, setName] = React.useState('');
@@ -10,6 +11,16 @@ const MyHello = () => {
     const greeting = await splash.greet(name);
     setMessage(greeting);
   }
+
+  React.useEffect(() => {
+    const loadCanvasKit = async () => {
+      console.log("Loading");
+      const canvaskit = await CanvasKitInit();
+      console.log(canvaskit);
+    };
+
+    loadCanvasKit();
+  }, [])
 
   return (
     <div style={{ "fontSize": "30px" }}>

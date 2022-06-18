@@ -63,6 +63,8 @@ module.exports = {
       events: require.resolve("events/"),
       stream: require.resolve("stream-browserify/"),
       util: require.resolve("util/"),
+      path: require.resolve("path-browserify/"),
+      fs: false
     },
   },
   output: {
@@ -92,8 +94,12 @@ module.exports = {
           from: path.join(__dirname, "src", frontendDirectory, "assets"),
           to: path.join(__dirname, "dist", frontendDirectory),
         },
+        { from: 'node_modules/canvaskit-wasm/bin/canvaskit.wasm' }
       ],
     }),
+    // new CopyPlugin([
+      
+    // ]),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       ...canisterEnvVariables,
