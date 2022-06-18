@@ -1,0 +1,36 @@
+{
+  "canisters": {
+    "splash": {
+      "candid": "src/splash/splash.did",
+      "package": "splash",
+      "type": "rust"
+    },
+    "splash_assets": {
+      "dependencies": [
+        "splash"
+      ],
+      "frontend": {
+        "entrypoint": "src/splash_assets/src/index.html"
+      },
+      "source": [
+        "src/splash_assets/assets",
+        "dist/splash_assets/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "dfx": "0.10.0",
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  },
+  "version": 1
+}
