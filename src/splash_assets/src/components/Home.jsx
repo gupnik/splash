@@ -5,7 +5,7 @@ import { useSplashContext } from "../store/SplashContext";
 export const Home = () => {
     const [name, setName] = React.useState('');
     const [message, setMessage] = React.useState('');
-    const { actor } = useSplashContext();
+    const { actor, isAuthenticated, login, logout } = useSplashContext();
 
     async function doGreet() {
       const greeting = await actor.greet(name);
@@ -38,6 +38,10 @@ export const Home = () => {
 
     return (
     <div style={{ "fontSize": "30px" }}>
+      {isAuthenticated
+        ? <button onClick={logout}>Logout</button>
+        : <button onClick={login}>Login</button>
+      }
       <div style={{ "backgroundColor": "yellow" }}>
         <p>Greetings, from DFINITY!</p>
         <p>

@@ -46,6 +46,9 @@
     "last 2 edge version"
   ],
   "dependencies": {
+    "@dfinity/auth-client": "^0.11.3",
+    "@dfinity/authentication": "^0.11.3",
+    "@dfinity/identity": "^0.11.3",
     "canvaskit-wasm": "^0.34.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
