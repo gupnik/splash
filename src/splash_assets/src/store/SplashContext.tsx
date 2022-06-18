@@ -37,7 +37,7 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
       const authClient = await AuthClient.create();
       setAuthClient(authClient);
       if (await authClient.isAuthenticated()) {
-        onLogin();
+        onLogin(authClient);
       } else {
         setActor(createActor());
       }
@@ -46,16 +46,20 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
     loadActor();
   }, []);
 
-  const onLogin = async () => {
-    setActor(createActor({
+  const onLogin = async (authClient: AuthClient) => {
+    const actor = createActor({
       agentOptions: {
         identity: authClient.getIdentity(),
       },
-    }));
+    });
+    setActor(actor);
     setAuthenticated(true);
+
+    await actor.register_device('Splash', 'Key'); //TODO: Fix hard-coded values
 
     const projects = await actor.get_projects();
     setProjects(projects);
+    console.log(projects);
   }
   
   const onLogout = async () => {
@@ -72,7 +76,7 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
           process.env.DFX_NETWORK === 'ic'
             ? 'https://identity.ic0.app/#authorize'
             : `http://${canisterId}.localhost:8000/#authorize`,
-        onSuccess: onLogin,
+        onSuccess: () => { onLogin(authClient) },
       })
     }
   }

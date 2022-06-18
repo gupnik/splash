@@ -84,7 +84,7 @@ fn users_invariant() -> bool {
 /// Panics if [users_invariant] is violated.
 fn user_count() -> usize {
     assert!(users_invariant());
-    PROJECTS_BY_USER.with(|notes_ref| notes_ref.borrow().keys().len())
+    PROJECTS_BY_USER.with(|projects_ref| projects_ref.borrow().keys().len())
 }
 
 /// Check if this user has been registered
@@ -187,8 +187,9 @@ fn register_device(alias: DeviceAlias, pk: PublicKey) -> bool {
             Vacant(empty_store_entry) => {
                 // caller unknown ==> check invariants
                 // A. can we add a new user?
-                assert!(MAX_USERS.with(|mu| user_count() < mu.clone()));
-                // B. this caller does not have notes
+                let user_count = PROJECTS_BY_USER.with(|projects_ref| projects_ref.borrow().keys().len());
+                assert!(MAX_USERS.with(|mu| user_count < mu.clone()));
+                // B. this caller does not have projects
                 let principal_name = caller.to_string();
                 assert!(PROJECTS_BY_USER.with(|projects_ref| !projects_ref.borrow().contains_key(&principal_name)));
 
@@ -203,8 +204,8 @@ fn register_device(alias: DeviceAlias, pk: PublicKey) -> bool {
                     }
                 });
                 // 2) a new [Vec<EncryptedNote>] entry in [NOTES_BY_USER]
-                PROJECTS_BY_USER.with(|notes_ref| 
-                    notes_ref.borrow_mut().insert(principal_name, vec![]));
+                PROJECTS_BY_USER.with(|projects_ref| 
+                    projects_ref.borrow_mut().insert(principal_name, vec![]));
                 
                 // finally, indicate accept
                 true
