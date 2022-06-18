@@ -16,9 +16,10 @@
     "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --exclude='*.most' --delete src/declarations"
   },
   "devDependencies": {
-    "@dfinity/agent": "0.11.3",
+    "@dfinity/agent": "^0.11.3",
     "@dfinity/candid": "0.11.3",
     "@dfinity/principal": "0.11.3",
+    "@types/react": "^18.0.14",
     "assert": "2.0.0",
     "buffer": "6.0.3",
     "copy-webpack-plugin": "^9.0.1",

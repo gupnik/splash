@@ -1,3 +1,24 @@
-service : {
-    "greet": (text) -> (text) query;
-}
+type anon_class_15_1 = 
+ service {
+   greet: (text) -> (text) query;
+   add_project: (text) -> ();
+   delete_project: (int) -> ();
+   get_projects: () -> (vec SplashProject);
+   get_devices: () -> (vec record {
+                             DeviceAlias;
+                             PublicKey;
+                           });
+   register_device: (DeviceAlias, PublicKey) -> (bool);
+   remove_device: (DeviceAlias) -> () oneway;
+   update_project: (SplashProject) -> ();
+   whoami: () -> (text);
+ };
+type SplashProject = 
+ record {
+   data: text;
+   id: nat;
+ };
+type PublicKey = text;
+type DeviceAlias = text;
+type Ciphertext = text;
+service : () -> anon_class_15_1
