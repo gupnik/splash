@@ -110,10 +110,10 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
     if (!isAuthenticated) {
       authClient.login({
         maxTimeToLive: BigInt(1800) * BigInt(1_000_000_000),
-        identityProvider:
-          process.env.DFX_NETWORK === 'ic'
-            ? 'https://identity.ic0.app/#authorize'
-            : `http://${canisterId}.localhost:8000/#authorize`,
+        identityProvider: 'https://identity.ic0.app/#authorize',
+          // process.env.DFX_NETWORK === 'ic'
+          //   ?
+          //   : `http://${canisterId}.localhost:8000/#authorize`,
         onSuccess: () => { onLogin(authClient) },
       })
     }

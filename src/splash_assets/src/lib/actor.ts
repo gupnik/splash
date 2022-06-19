@@ -15,10 +15,10 @@ export function createActor(options?: {
     actorOptions?: ActorConfig;
   }): BackendActor {
     const hostOptions = {
-      host:
-        process.env.DFX_NETWORK === 'ic'
-          ? `https://${canisterId}.ic0.app`
-          : 'http://localhost:8000',
+      host: `https://d6uqw-tyaaa-aaaap-aag5q-cai.ic0.app/`
+        // process.env.DFX_NETWORK === 'ic'
+        //   ? `https://${canisterId}.ic0.app`
+        //   : 'http://localhost:8000',
     };
     if (!options) {
       options = {
