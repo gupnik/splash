@@ -13,12 +13,16 @@ export const Project = () => {
     const [width, setWidth] = useState<number>(100);
     const [height, setHeight] = useState<number>(100);
 
+    const [r, setR] = useState<number>(0);
+    const [g, setG] = useState<number>(0);
+    const [b, setB] = useState<number>(0);
+    const [a, setA] = useState<number>(255);
+
     const loadProject = () => {
         if (!canvasKit) { return }
         const surface = canvasKit.MakeCanvasSurface('foo');
 
         const paint = new canvasKit.Paint();
-        paint.setColor(canvasKit.Color4f(0.9, 0, 0, 1.0));
         paint.setStyle(canvasKit.PaintStyle.Stroke);
         paint.setAntiAlias(true);
 
@@ -26,6 +30,11 @@ export const Project = () => {
             canvas.clear(canvasKit.WHITE);
 
             for (const shape of shapes) {
+                if (shape.color) {
+                    paint.setColor(canvasKit.Color4f(shape.color[0]/255., shape.color[1]/255., shape.color[2]/255., shape.color[3]/255.));
+                } else {
+                    paint.setColor(canvasKit.Color4f(0, 0, 0, 1.0));
+                }
                 const path = new canvasKit.Path();
                 switch(shape.type) {
                     case 0:
@@ -49,14 +58,16 @@ export const Project = () => {
     const addRectangle = () => {
         setShapes(shapes.concat(new Shape(
             0, 
-            [x, y, width, height]
+            [x, y, width, height],
+            [r, g, b, a]
         )))
     }
 
     const addCircle = () => {
         setShapes(shapes.concat(new Shape(
             1, 
-            [x, y, width, height]
+            [x, y, width, height],
+            [r, g, b, a]
         )))
     }
 
@@ -123,6 +134,24 @@ export const Project = () => {
                     <TextField label="Width" type="number" defaultValue={width} onChange={(e) => setWidth(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
                     <TextField label="Height" type="number" defaultValue={height} onChange={(e) => setHeight(parseInt(e.currentTarget.value))}/>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion style={{ width: "100%" }}>
+                    <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                    >
+                    <Typography>Color</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <TextField label="R" type="number" defaultValue={r} onChange={(e) => setR(parseInt(e.currentTarget.value))}/>
+                    <Box height={10}/>
+                    <TextField label="G" type="number" defaultValue={g} onChange={(e) => setG(parseInt(e.currentTarget.value))}/>
+                    <Box height={10}/>
+                    <TextField label="B" type="number" defaultValue={b} onChange={(e) => setB(parseInt(e.currentTarget.value))}/>
+                    <Box height={10}/>
+                    <TextField label="A" type="number" defaultValue={a} onChange={(e) => setA(parseInt(e.currentTarget.value))}/>
                     </AccordionDetails>
                 </Accordion>
             </Stack>

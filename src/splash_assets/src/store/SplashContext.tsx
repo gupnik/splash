@@ -8,10 +8,12 @@ import { loadCanvasKit } from "../lib/utils";
 export class Shape {
   type: number;
   points: number[];
+  color: number[];
 
-  constructor(theType: number, thePoints: number[]) {
+  constructor(theType: number, thePoints: number[], theColor: number[] = [0, 0, 0, 255]) {
       this.type = theType;
       this.points = thePoints;
+      this.color = theColor;
   }
 }
 
