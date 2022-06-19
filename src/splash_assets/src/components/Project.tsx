@@ -3,12 +3,10 @@ import { Divider, IconButton, Stack } from "@mui/material";
 import { Box } from "@mui/system";
 import { Path } from "canvaskit-wasm";
 import React, { useEffect, useState } from "react"
-import { useSplashContext } from "../store/SplashContext"
+import { Shape, useSplashContext } from "../store/SplashContext"
 
 export const Project = () => {
-    const { canvasKit } = useSplashContext();
-
-    const [paths, setPaths] = useState<Path[]>([]);
+    const { canvasKit, shapes, setShapes } = useSplashContext();
 
     const loadProject = () => {
         if (!canvasKit) { return }
@@ -22,32 +20,39 @@ export const Project = () => {
         function drawFrame(canvas) {
             canvas.clear(canvasKit.WHITE);
 
-            for (const path of paths) {
+            for (const shape of shapes) {
+                const path = new canvasKit.Path();
+                switch(shape.type) {
+                    case 0:
+                        path.addRect(shape.points);
+                        break;
+                    case 1:
+                        path.addOval(shape.points);
+                        break;
+                }
                 canvas.drawPath(path, paint);
             }
 
-            // surface.requestAnimationFrame(drawFrame);
         }
-        // surface.requestAnimationFrame(drawFrame);
         surface.drawOnce(drawFrame);
     }
 
     useEffect(() => {
         loadProject();
-    }, [canvasKit, paths])
+    }, [canvasKit, shapes])
 
     const addRectangle = () => {
-        if (!canvasKit) { return }
-        const path = new canvasKit.Path();
-        path.addRect([20, 20, 100, 100]);
-        setPaths(paths.concat(path));
+        setShapes(shapes.concat(new Shape(
+            0, 
+            [20, 20, 100, 100]
+        )))
     }
 
     const addCircle = () => {
-        if (!canvasKit) { return }
-        const path = new canvasKit.Path();
-        path.addOval([20, 20, 100, 100]);
-        setPaths(paths.concat(path));
+        setShapes(shapes.concat(new Shape(
+            1, 
+            [20, 20, 100, 100]
+        )))
     }
 
     return (

@@ -5,6 +5,16 @@ import { canisterId } from "../../../declarations/internet_identity";
 import { CanvasKit } from "canvaskit-wasm";
 import { loadCanvasKit } from "../lib/utils";
 
+export class Shape {
+  type: number;
+  points: number[];
+
+  constructor(theType: number, thePoints: number[]) {
+      this.type = theType;
+      this.points = thePoints;
+  }
+}
+
 export interface SplashProject {
     id: bigint;
     data: string;
@@ -17,11 +27,13 @@ export interface SplashContext {
   actor: BackendActor | null,
   projects: SplashProject[] | null,
   currentProject: SplashProject | null,
+  shapes: Shape[], 
+  setShapes: (shapes: Shape[]) => void,
   login: () => void,
   logout: () => Promise<void>,
   create: () => void,
   open: (project: SplashProject) => void,
-  close: () => void,
+  close: () => Promise<void>,
 }
 
 const splashContext = createContext<SplashContext>({
@@ -31,11 +43,13 @@ const splashContext = createContext<SplashContext>({
   actor: null,
   projects: null,
   currentProject: null,
+  shapes: [],
+  setShapes: (shapes: Shape[]) => {},
   login: () => {},
   logout: async () => {},
   create: () => {},
   open: (project) => {},
-  close: () => {},
+  close: async () => {},
 })
 
 export function SplashContextProvider({ children }: { children: ReactChild }) {
@@ -45,6 +59,7 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
   const [actor, setActor] = useState<BackendActor | null>(null);
   const [projects, setProjects] = useState<SplashProject[] | null>(null);
   const [currentProject, setCurrentProject] = useState<SplashProject | null>(null);
+  const [shapes, setShapes] = useState<Shape[]>([]);
 
   useEffect(() => {
     const setupCanvasKit = async () => {
@@ -119,10 +134,14 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
   }
 
   const open = (project: SplashProject) => {
+    setShapes(project.data ? JSON.parse(project.data) : []);
     setCurrentProject(project);
   };
 
-  const close = () => {
+  const close = async () => {
+    currentProject.data = JSON.stringify(shapes);
+    await actor.update_project(currentProject);
+
     setCurrentProject(null);
   }
 
@@ -135,6 +154,8 @@ export function SplashContextProvider({ children }: { children: ReactChild }) {
           actor,
           projects,
           currentProject,
+          shapes,
+          setShapes,
           login,
           logout,
           create,

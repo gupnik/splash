@@ -20,12 +20,12 @@ export const Projects = () => {
                     /> */}
                     <CardContent style={{ backgroundColor: "lightgray" }}>
                         <Typography variant="body2" color="text.secondary">
-                            Click here to create a new project!
+                            Click CREATE to create a new project!
                         </Typography>
                     </CardContent>
                     <CardActions>
                         <Button size="small" color="primary" onClick={() => create()}>
-                        Create
+                        CREATE
                         </Button>
                     </CardActions>
                 </CardActionArea>
@@ -58,7 +58,7 @@ export const Projects = () => {
                                         {project.id.toString()}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Click here to open this project!
+                                        Click EDIT to edit this project!
                                     </Typography>
                                 </CardContent>
                                 <CardActions>

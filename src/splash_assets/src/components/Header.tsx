@@ -18,7 +18,7 @@ const pages = ['Projects'];
 const settings = ['Logout'];
 
 const Header = () => {
-  const { isAuthenticated, login, logout, close } = useSplashContext();
+  const { isAuthenticated, login, logout, close, currentProject } = useSplashContext();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -37,6 +37,14 @@ const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const getTitle = () => {
+    if (currentProject) {
+      return `SAVE ${currentProject.id} AND EXIT`
+    } else {
+      return "PROJECTS"
+    }
+  }
 
   return (
     <AppBar position="static" style={{ backgroundColor: "dimgray" }}>
@@ -91,11 +99,11 @@ const Header = () => {
               }}
             >
               <Button
-                key={"Projects"}
+                key={getTitle()}
                 onClick={close}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {"Projects"}
+                {getTitle()}
               </Button>
               {/* {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
@@ -125,11 +133,11 @@ const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
              <Button
-                key={"Projects"}
+                key={getTitle()}
                 onClick={close}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {"Projects"}
+                {getTitle()}
               </Button>
             {/* {pages.map((page) => (
               <Button
