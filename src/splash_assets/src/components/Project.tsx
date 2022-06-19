@@ -23,6 +23,8 @@ export const Project = () => {
     const [b, setB] = useState<number>(0);
     const [a, setA] = useState<number>(255);
 
+    const [activeShape, setActiveShape] = useState<Shape | null>(null);
+
     useEffect(() => {
         if (!canvasKit) { return }
 
@@ -60,9 +62,22 @@ export const Project = () => {
                 canvas.drawPath(path, paint);
             }
 
+            if (activeShape) {
+                paint.setColor(canvasKit.Color4f(r/255., g/255., b/255., a/255.));
+                const path = new canvasKit.Path();
+                switch(activeShape.type) {
+                    case 0:
+                        path.addRect(activeShape.points);
+                        break;
+                    case 1:
+                        path.addOval(activeShape.points);
+                        break;
+                }
+                canvas.drawPath(path, paint);
+            }
         }
         surface!.drawOnce(drawFrame);
-    }, [canvasKit, shapes])
+    }, [canvasKit, shapes, activeShape])
 
     const addRectangle = () => {
         setType(0);
@@ -90,18 +105,27 @@ export const Project = () => {
     }
 
     useEffect(() => {
-        console.log(mouseState, mouseX, mouseY);
         if (mouseState == 0) {
             setX(mouseX);
             setY(mouseY);
             setMouseState(1);
         } else if (mouseState == 1) {
-            setWidth(mouseX);
-            setHeight(mouseY);
+            const width = mouseX;
+            const height = mouseY;
+            setWidth(width);
+            setHeight(height);
+            setActiveShape(new Shape(
+                type, 
+                [x, y, width, height],
+                [r, g, b, a]
+            ));
         } else if (mouseState == 2) {
-            setWidth(mouseX);
-            setHeight(mouseY);
+            const width = mouseX;
+            const height = mouseY;
+            setWidth(width);
+            setHeight(height);
 
+            setActiveShape(null);
             setMouseState(-1);
             setShapes(shapes.concat(new Shape(
                 type, 
