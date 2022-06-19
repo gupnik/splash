@@ -8,7 +8,7 @@ export const Projects = () => {
     console.log(projects)
 
     return (
-        <Stack>
+        <Stack padding={"10px"}>
             <Box height={40}/>
             <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
@@ -18,20 +18,22 @@ export const Projects = () => {
                         // image="/static/images/cards/contemplative-reptile.jpg"
                         alt="green iguana"
                     /> */}
-                    <CardContent>
+                    <CardContent style={{ backgroundColor: "lightgray" }}>
                         <Typography variant="body2" color="text.secondary">
-                            Lizards are a widespread group of squamate reptiles, with over 6,000
-                            species, ranging across all continents except Antarctica
+                            Click here to create a new project!
                         </Typography>
                     </CardContent>
                     <CardActions>
                         <Button size="small" color="primary" onClick={() => create()}>
-                        Create New
+                        Create
                         </Button>
                     </CardActions>
                 </CardActionArea>
             </Card>
             <Box height={40}/>
+            <Typography variant="h5">
+                My Projects
+            </Typography>
             <Divider />
             <Box height={40}/>
             { projects == null 
@@ -45,19 +47,18 @@ export const Projects = () => {
                     <Grid item key={project.id.toString()}>
                         <Card sx={{ maxWidth: 345 }}>
                             <CardActionArea>
-                                <CardMedia
+                                {/* <CardMedia
                                     component="img"
                                     height="140"
                                     // image="/static/images/cards/contemplative-reptile.jpg"
                                     alt="green iguana"
-                                />
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
+                                /> */}
+                                <CardContent style={{ backgroundColor: "lightgray" }}>
+                                    <Typography gutterBottom variant="h1" component="div" textAlign={"center"}>
                                         {project.id.toString()}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Lizards are a widespread group of squamate reptiles, with over 6,000
-                                        species, ranging across all continents except Antarctica
+                                        Click here to open this project!
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
