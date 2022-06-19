@@ -1,12 +1,17 @@
 import { Circle, CircleOutlined, ExpandMore, FormatShapes, Rectangle, RectangleOutlined, Spa } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Divider, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Path } from "canvaskit-wasm";
 import React, { useEffect, useState } from "react"
 import { Shape, useSplashContext } from "../store/SplashContext"
 
 export const Project = () => {
     const { canvasKit, shapes, setShapes } = useSplashContext();
+
+    const [mouseState, setMouseState] = useState<number>(-1);
+    const [mouseX, setMouseX] = useState<number>(0);
+    const [mouseY, setMouseY] = useState<number>(0);
+
+    const [type, setType] = useState<number>(0);
 
     const [x, setX] = useState<number>(20);
     const [y, setY] = useState<number>(20);
@@ -18,7 +23,15 @@ export const Project = () => {
     const [b, setB] = useState<number>(0);
     const [a, setA] = useState<number>(255);
 
-    const loadProject = () => {
+    useEffect(() => {
+        if (!canvasKit) { return }
+
+        document.getElementById('foo').addEventListener('mousedown', onMouseDown.bind(this));
+        document.getElementById('foo').addEventListener('mousemove', onMouseMove.bind(this));
+        document.getElementById('foo').addEventListener('mouseup', onMouseUp.bind(this));
+    }, [canvasKit])
+
+    useEffect(() => {
         if (!canvasKit) { return }
         const surface = canvasKit.MakeCanvasSurface('foo');
 
@@ -48,28 +61,55 @@ export const Project = () => {
             }
 
         }
-        surface.drawOnce(drawFrame);
-    }
-
-    useEffect(() => {
-        loadProject();
+        surface!.drawOnce(drawFrame);
     }, [canvasKit, shapes])
 
     const addRectangle = () => {
-        setShapes(shapes.concat(new Shape(
-            0, 
-            [x, y, width, height],
-            [r, g, b, a]
-        )))
+        setType(0);
     }
 
     const addCircle = () => {
-        setShapes(shapes.concat(new Shape(
-            1, 
-            [x, y, width, height],
-            [r, g, b, a]
-        )))
+        setType(1);
     }
+
+    const onMouseDown = (ev) => {
+        setMouseState(0);
+        setMouseX(ev.offsetX);
+        setMouseY(ev.offsetY);
+    }
+
+    const onMouseMove = (ev) => {
+        setMouseX(ev.offsetX);
+        setMouseY(ev.offsetY);
+    }
+
+    const onMouseUp = (ev) => {
+        setMouseState(2);
+        setMouseX(ev.offsetX);
+        setMouseY(ev.offsetY);       
+    }
+
+    useEffect(() => {
+        console.log(mouseState, mouseX, mouseY);
+        if (mouseState == 0) {
+            setX(mouseX);
+            setY(mouseY);
+            setMouseState(1);
+        } else if (mouseState == 1) {
+            setWidth(mouseX);
+            setHeight(mouseY);
+        } else if (mouseState == 2) {
+            setWidth(mouseX);
+            setHeight(mouseY);
+
+            setMouseState(-1);
+            setShapes(shapes.concat(new Shape(
+                type, 
+                [x, y, width, height],
+                [r, g, b, a]
+            )))
+        }
+    }, [mouseState, mouseX, mouseY])
 
     return (
         <Stack direction={"row"} height={"100vh"} display="flex">
@@ -127,13 +167,13 @@ export const Project = () => {
                     <Typography>Position</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <TextField label="X" type="number" defaultValue={x} onChange={(e) => setX(parseInt(e.currentTarget.value))}/>
+                    <TextField label="X" type="number" value={x} onChange={(e) => setX(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="Y" type="number" defaultValue={y} onChange={(e) => setY(parseInt(e.currentTarget.value))}/>
+                    <TextField label="Y" type="number" value={y} onChange={(e) => setY(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="Width" type="number" defaultValue={width} onChange={(e) => setWidth(parseInt(e.currentTarget.value))}/>
+                    <TextField label="Width" type="number" value={Math.abs(width - x)} onChange={(e) => setWidth(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="Height" type="number" defaultValue={height} onChange={(e) => setHeight(parseInt(e.currentTarget.value))}/>
+                    <TextField label="Height" type="number" value={Math.abs(height - y)} onChange={(e) => setHeight(parseInt(e.currentTarget.value))}/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion style={{ width: "100%" }}>
@@ -145,13 +185,13 @@ export const Project = () => {
                     <Typography>Color</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <TextField label="R" type="number" defaultValue={r} onChange={(e) => setR(parseInt(e.currentTarget.value))}/>
+                    <TextField label="R" type="number" value={r} onChange={(e) => setR(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="G" type="number" defaultValue={g} onChange={(e) => setG(parseInt(e.currentTarget.value))}/>
+                    <TextField label="G" type="number" value={g} onChange={(e) => setG(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="B" type="number" defaultValue={b} onChange={(e) => setB(parseInt(e.currentTarget.value))}/>
+                    <TextField label="B" type="number" value={b} onChange={(e) => setB(parseInt(e.currentTarget.value))}/>
                     <Box height={10}/>
-                    <TextField label="A" type="number" defaultValue={a} onChange={(e) => setA(parseInt(e.currentTarget.value))}/>
+                    <TextField label="A" type="number" value={a} onChange={(e) => setA(parseInt(e.currentTarget.value))}/>
                     </AccordionDetails>
                 </Accordion>
             </Stack>
